@@ -1,17 +1,15 @@
 package org.kk.piemenu
 
+import android.app.Activity
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import org.kk.lib.piemenu.PieMenuItem
 import org.kk.lib.piemenu.PieMenuWidget
+import org.kk.piemenu.databinding.ActivityMainBinding
 
-class MainActivity : ComponentActivity() {
+class MainActivity : Activity() {
 
     private lateinit var pieMenu: PieMenuWidget
     private var menuItem: PieMenuItem? = null
@@ -23,7 +21,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         pieMenu = PieMenuWidget(this)
@@ -77,11 +76,6 @@ class MainActivity : ComponentActivity() {
             pieMenu.dismiss()
         }
 
-        val tv = findViewById<TextView>(R.id.tv)
-        val globalRect = Rect()
-        tv.getGlobalVisibleRect(globalRect)
-        println(globalRect.left.toString() + ", " + globalRect.right)
-
         pieMenu.setDismissOnOutsideClick(false)
         pieMenu.setAnimationSpeed(0)
         pieMenu.setIconSize(15, 30)
@@ -105,8 +99,7 @@ class MainActivity : ComponentActivity() {
             }
         })
 
-        val testButton = findViewById<View>(R.id.menu_btn) as Button
-        testButton.setOnClickListener { v: View? ->
+        binding.menuBtn.setOnClickListener { v: View? ->
 //            pieMenu.setCenterLocationWithView(tv)
             pieMenu.show(v)
         }
