@@ -120,7 +120,7 @@ public class PieMenuWidget extends View {
 	private int r2VariableSize;
 	private boolean animateOuterIn = false;
 	private boolean animateOuterOut = false;
-	private int clickIndex;
+	private int clickIndex, lastClickIndex;
 	private final PopupWindow mWindow;
 
 	Paint paint = new Paint();
@@ -208,6 +208,17 @@ public class PieMenuWidget extends View {
 				inCircle = helper.pntInCircle(eventX, eventY, xPosition, yPosition, cRadius);
 			}
 		} else if (state == MotionEvent.ACTION_UP) {
+			int upIndex = 0;
+			for (int i = 0; i < Wedges.length; i++) { // record up Index
+				PieMenuWedge f = Wedges[i];
+				double slice = (2 * Math.PI) / wedgeQty;
+				double start = (2 * Math.PI) * (0.75) - (slice / 2);
+				if (helper.pntInWedge(eventX, eventY, xPosition, yPosition, MinSize, MaxSize, (i * slice) + start, slice)) {
+					upIndex = i;
+					break;
+				}
+			}
+
 			// execute commands...
 			// put in stuff here to "return" the button that was pressed.
 			if (inCircle) { // 点击了中心块
@@ -231,6 +242,7 @@ public class PieMenuWidget extends View {
 							animateOuterIn = true; // sets Wedge2Shown = false;
 							// If outer ring is not enabled, then executes event
 						} else {
+							lastClickIndex = clickIndex;
 							menuEntries.get(i).menuActivated();
 							// Figures out how many outer rings
 							if (menuEntries.get(i).getChildren() != null) {
@@ -243,15 +255,15 @@ public class PieMenuWidget extends View {
 						}
 						selected = null;
 					} else {
-//						if (Wedge2Shown) { // 如果二级菜单显示了，则收缩
-//							enabled = null;
-//							animateOuterIn = false;
-//							Wedge2Shown = false;
-//							selected = null;
-//							selected2 = null;
-//							invalidate();
-//							return true;
-//						}
+						if (Wedge2Shown && upIndex != lastClickIndex) { // 如果二级菜单显示了，则收缩
+							enabled = null;
+							animateOuterIn = false;
+							Wedge2Shown = false;
+							selected = null;
+							selected2 = null;
+							invalidate();
+							return true;
+						}
 					}
 				}
 			} else if (selected2 != null) { // 点击了第二层菜单
@@ -639,7 +651,7 @@ public class PieMenuWidget extends View {
 		boolean animationComplete = false;
 		// Wedge 2
 		float slice2 = 360 / wedgeQty / wedgeQty2; // 每个MenuItem分片角度大小
-		float start_slice2 = 270 - (slice2 * wedgeQty2) / 2 + (clickIndex * (slice2 * wedgeQty2));
+		float start_slice2 = 270 + (360 / wedgeQty) / 2 + ((clickIndex - 1) * (360 / wedgeQty));
 		this.Wedges2 = new PieMenuWedge[wedgeQty2];
 		this.iconRect2 = new Rect[wedgeQty2];
 
@@ -660,9 +672,11 @@ public class PieMenuWidget extends View {
 
 			// calculates new wedge sizes
 			for (int i = 0; i < Wedges2.length; i++) {
-				this.Wedges2[i] = new PieMenuWedge(xPosition, yPosition, r2MinSize, r2MinSize + r2VariableSize, (i * slice2) + start_slice2, slice2);
+				this.Wedges2[i] = new PieMenuWedge(xPosition, yPosition, r2MinSize,
+						r2MinSize + r2VariableSize, (i * slice2) + start_slice2, slice2);
 
-				float angle = (float) Math.toRadians(360f / (wedgeQty * wedgeQty2) * (i + wedgeQty2 * clickIndex - 1));
+				double angleOffset = ((wedgeQty2 - 1) * 0.5);
+				float angle = (float) Math.toRadians(360f / (wedgeQty * wedgeQty2) * (i + wedgeQty2 * clickIndex - angleOffset));
 				float xCenter = xPosition + (float) Math.sin(angle) * (r2MinSize + r2VariableSize + r2MinSize) / 2 ;
 				float yCenter = yPosition + (float) -Math.cos(angle) * (r2MinSize + r2VariableSize + r2MinSize) / 2;
 
@@ -712,9 +726,11 @@ public class PieMenuWidget extends View {
 			this.animateTextSize = textSize - ((textSize / animateSections) * (r2VariableSize / wedgeSizeChange));
 
 			for (int i = 0; i < Wedges2.length; i++) {
-				this.Wedges2[i] = new PieMenuWedge(xPosition, yPosition, r2MinSize, r2MaxSize - r2VariableSize, (i * slice2) + start_slice2, slice2);
+				this.Wedges2[i] = new PieMenuWedge(xPosition, yPosition, r2MinSize,
+						r2MaxSize - r2VariableSize, (i * slice2) + start_slice2, slice2);
 
-				float angle = (float) Math.toRadians(360f / (wedgeQty * wedgeQty2) * (i + wedgeQty2 * clickIndex - 1));
+				double angleOffset = ((wedgeQty2 - 1) * 0.5);
+				float angle = (float) Math.toRadians(360f / (wedgeQty * wedgeQty2) * (i + wedgeQty2 * clickIndex - angleOffset));
 				float xCenter = xPosition + (float) Math.sin(angle) * (r2MinSize + r2VariableSize + r2MinSize) / 2 ;
 				float yCenter = yPosition + (float) -Math.cos(angle) * (r2MinSize + r2VariableSize + r2MinSize) / 2;
 

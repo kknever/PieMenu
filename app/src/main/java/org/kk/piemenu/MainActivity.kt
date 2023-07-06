@@ -15,9 +15,10 @@ class MainActivity : Activity() {
     private var menuItem: PieMenuItem? = null
     private var centerItem: PieMenuItem? = null
     private var menuExpandItem: PieMenuItem? = null
-    private var firstChildItem: PieMenuItem? = null
-    private var secondChildItem: PieMenuItem? = null
-    private var thirdChildItem: PieMenuItem? = null
+    private var child1: PieMenuItem? = null
+    private var child2: PieMenuItem? = null
+    private var child3: PieMenuItem? = null
+    private var child4: PieMenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +34,8 @@ class MainActivity : Activity() {
         menuItem = PieMenuItem("Normal")
         menuItem!!.setOnMenuItemPressed {}
 
-        firstChildItem = PieMenuItem("111")
-        firstChildItem!!.setOnMenuItemPressed {
+        child1 = PieMenuItem("111")
+        child1!!.setOnMenuItemPressed {
             Toast.makeText(
                 this,
                 "click 111",
@@ -42,9 +43,9 @@ class MainActivity : Activity() {
             ).show()
         }
 
-        secondChildItem = PieMenuItem("222")
-        secondChildItem!!.setDisplayIcon(R.drawable.ic_action_camera)
-        secondChildItem!!.setOnMenuItemPressed {
+        child2 = PieMenuItem("222")
+        child2!!.setDisplayIcon(R.drawable.ic_action_camera)
+        child2!!.setOnMenuItemPressed {
             Toast.makeText(
                 this,
                 "click 222",
@@ -52,9 +53,9 @@ class MainActivity : Activity() {
             ).show()
         }
 
-        thirdChildItem = PieMenuItem("333")
-        thirdChildItem!!.setDisplayIcon(R.drawable.ic_action_camera)
-        thirdChildItem!!.setOnMenuItemPressed {
+        child3 = PieMenuItem("333")
+        child3!!.setDisplayIcon(R.drawable.ic_action_camera)
+        child3!!.setOnMenuItemPressed {
             Toast.makeText(
                 this,
                 "click 333",
@@ -62,13 +63,23 @@ class MainActivity : Activity() {
             ).show()
         }
 
+        child4 = PieMenuItem("444")
+        child4!!.setDisplayIcon(R.drawable.ic_action_camera)
+        child4!!.setOnMenuItemPressed {
+            Toast.makeText(
+                this,
+                "click 444",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         menuExpandItem = PieMenuItem("Expandable")
         menuExpandItem!!.setDisplayIcon(R.drawable.ic_about)
         val children: MutableList<PieMenuItem> = ArrayList()
-        children.add(firstChildItem!!)
-        children.add(secondChildItem!!)
-        children.add(thirdChildItem!!)
+        children.add(child1!!)
+        children.add(child2!!)
+        children.add(child3!!)
+        children.add(child4!!)
         menuExpandItem!!.setMenuChildren(children)
 
         centerItem!!.setOnMenuItemPressed {
